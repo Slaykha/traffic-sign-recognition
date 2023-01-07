@@ -42,8 +42,8 @@ def getContours(img, imgContour, imgCut):
             if len(approx) == 8:
                 cv2.rectangle(imgContour, (x, y), (x + w , y + h ), (0, 255, 0), 5)
 
-                imgcutted = imgCut[y - 5:y + h + 10, x - 5:x + w + 10]
-                if(x > 6 and y > 6):
+                imgcutted = imgCut[y - 10:y + h + 10, x - 10:x + w + 10]
+                if(x > 11 and y > 11):
                     cv2.imshow("cut", imgcutted)
                     imgModel = preProcess(imgcutted)
                     
@@ -52,8 +52,8 @@ def getContours(img, imgContour, imgCut):
                     probabilityValue = np.amax(prediction)         
                     print(predictClass)
                     
-                    #cv2.putText(imgContour, "Accuracy: " + str(round(probabilityValue*100,2)) + "%", (x + w + 20, y + 20), cv2.FONT_HERSHEY_COMPLEX, .7, (0, 0, 255), 2)
-                    if(predictClass == 14):
+                    cv2.putText(imgContour, "Accuracy: " + str(round(probabilityValue*100,2)) + "%", (x + w + 20, y + 20), cv2.FONT_HERSHEY_COMPLEX, .7, (0, 0, 255), 2)
+                    if(predictClass == 12):
                         cv2.putText(imgContour, "Stop Sign", (x + w + 20, y + 40), cv2.FONT_HERSHEY_COMPLEX, .7, (0, 255, 0), 2)
                     else:
                         cv2.putText(imgContour, "Not Stop Sign", (x + w + 20, y + 40), cv2.FONT_HERSHEY_COMPLEX, .7, (0, 0, 255), 2)

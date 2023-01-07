@@ -12,22 +12,26 @@ X = X/255.0
 model = Sequential()
 model.add(Conv2D(64, (5,5), input_shape = X.shape[1:]))
 model.add(Activation("relu"))
+model.add(Conv2D(64, (5,5)))
+model.add(Activation("relu"))
 model.add(MaxPooling2D(pool_size=(2,2)))
 
-model.add(Conv2D(64, (3,3)))
+model.add(Conv2D(32, (3,3)))
+model.add(Activation("relu"))
+model.add(Conv2D(32, (3,3)))
 model.add(Activation("relu"))
 model.add(MaxPooling2D(pool_size=(2,2)))
 
 model.add(Flatten())
 model.add(Dense(64))
 
-model.add(Dense(43))
+model.add(Dense(19))
 model.add(Activation("softmax"))
 
 model.compile(optimizer='adam',
               loss="sparse_categorical_crossentropy",
               metrics=['accuracy'])
 
-model.fit(X, y, batch_size=64, epochs=3, validation_split=0.2)
+model.fit(X, y, batch_size=64, epochs=10, validation_split=0.1)
 
 model.save("TFR_V-01.model")

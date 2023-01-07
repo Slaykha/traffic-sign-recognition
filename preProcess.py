@@ -29,7 +29,8 @@ def createTrainingData():
       print(i)
       try:
         img_array = cv2.imread(os.path.join(path, img), cv2.IMREAD_GRAYSCALE)
-        newArray = cv2.resize(img_array, (imgSize, imgSize))
+        imgEqualize = cv2.equalizeHist(img_array)
+        newArray = cv2.resize(imgEqualize, (imgSize, imgSize))
         trainingData.append([newArray, classNum])
       except Exception as e:
         pass
