@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import tensorflow as tf
+import pandas as pd
 
 lower = np.array([0, 50, 50])
 upper = np.array([10, 255, 255])
@@ -8,11 +9,17 @@ upper = np.array([10, 255, 255])
 lower_red = np.array([170,50,50])
 upper_red = np.array([180,255,255])
 
+df = pd.read_csv("labels.csv")
+
+labels = df.iloc[:,].values
+
+print(labels)
+
 model = tf.keras.models.load_model("TFR_V-01.model")
 
 frameWidth = 640
 frameHeight = 640
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture("/home/kadir/Desktop/TrafficSignRecognition/objectDetection/video.mp4")
 cap.set(3, frameWidth)
 cap.set(4, frameHeight) 
 
@@ -33,14 +40,14 @@ def getContours(img, imgContour, imgCut):
 
     for cnt in contours:
         area = cv2.contourArea(cnt)
-        if area > 750:    
+        if area > 1000:    
             #cv2.drawContours(imgContour, cnt, -1, (255, 0, 255), 5)
             peri = cv2.arcLength(cnt, True)
             approx = cv2.approxPolyDP(cnt, 0.02 * peri, True)
             x, y, w, h =cv2.boundingRect(approx)
 
-            if len(approx) == 8:
-                cv2.rectangle(imgContour, (x, y), (x + w , y + h ), (0, 255, 0), 5)
+            print(len(approx))
+            if len(approx) == 8 or len(approx) == 3 or len(approx) == 4:
 
                 imgcutted = imgCut[y - 10:y + h + 10, x - 10:x + w + 10]
                 if(x > 11 and y > 11):
@@ -49,14 +56,11 @@ def getContours(img, imgContour, imgCut):
                     
                     prediction = model.predict(imgModel)
                     predictClass = np.argmax(prediction,axis=1)       
-                    probabilityValue = np.amax(prediction)         
-                    print(predictClass)
                     
-                    cv2.putText(imgContour, "Accuracy: " + str(round(probabilityValue*100,2)) + "%", (x + w + 20, y + 20), cv2.FONT_HERSHEY_COMPLEX, .7, (0, 0, 255), 2)
-                    if(predictClass == 12):
-                        cv2.putText(imgContour, "Stop Sign", (x + w + 20, y + 40), cv2.FONT_HERSHEY_COMPLEX, .7, (0, 255, 0), 2)
-                    else:
-                        cv2.putText(imgContour, "Not Stop Sign", (x + w + 20, y + 40), cv2.FONT_HERSHEY_COMPLEX, .7, (0, 0, 255), 2)
+                    for label in labels:
+                        if(predictClass == label[0]):
+                            cv2.rectangle(imgContour, (x, y), (x + w , y + h ), (0, 255, 0), 5)
+                            cv2.putText(imgContour, label[1], (x - 20, y - 10), cv2.FONT_HERSHEY_COMPLEX, .7, (0, 255, 0), 2)
 
 
 while True:
