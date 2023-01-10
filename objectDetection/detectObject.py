@@ -6,8 +6,8 @@ import pandas as pd
 lower = np.array([0, 50, 50])
 upper = np.array([10, 255, 255])
 
-lower_red = np.array([170,50,50])
-upper_red = np.array([180,255,255])
+lowerRed = np.array([170,50,50])
+upperRed = np.array([180,255,255])
 
 df = pd.read_csv("labels.csv")
 
@@ -19,7 +19,7 @@ model = tf.keras.models.load_model("TFR_V-01.model")
 
 frameWidth = 640
 frameHeight = 640
-cap = cv2.VideoCapture("/home/kadir/Desktop/TrafficSignRecognition/objectDetection/video.mp4")
+cap = cv2.VideoCapture("/home/kadir/Desktop/TrafficSignRecognition/objectDetection/imagesVideo.mp4")
 cap.set(3, frameWidth)
 cap.set(4, frameHeight) 
 
@@ -70,7 +70,7 @@ while True:
     imgColor = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
    
     imgMask0 = cv2.inRange(imgColor, lower, upper)
-    imgMask1 = cv2.inRange(imgColor, lower_red, upper_red)
+    imgMask1 = cv2.inRange(imgColor, lowerRed, upperRed)
 
     imgMask = imgMask0 + imgMask1
 

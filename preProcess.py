@@ -7,33 +7,31 @@ from PIL import Image
 import random
 import pickle
 
+labelCategories = []
+trainingData = []
+
 dataPath = "myData"
 df = pd.read_csv("labels.csv")
-categories = []
+labelValues = df.iloc[:,0].values
 
-values = df.iloc[:,0].values
-
-for value in values:
-  categories.append(str(value))
-
-trainingData = []
-imgSize = 32
+for labelValue in labelValues:
+  labelCategories.append(str(labelValue))
 
 def createTrainingData():
-  i = 0
-  for category in categories:
-    path = os.path.join(dataPath, category)
-    classNum = categories.index(category)
-    for img in os.listdir(path):
-      i += 1
-      print(i)
+  count = 0
+  for labelCategory in labelCategories:
+    path = os.path.join(dataPath, labelCategory)
+    classNumber = labelCategories.index(labelCategory)
+    for image in os.listdir(path):
+      count += 1
+      print(count)
       try:
-        img_array = cv2.imread(os.path.join(path, img), cv2.IMREAD_GRAYSCALE)
-        imgEqualize = cv2.equalizeHist(img_array)
-        newArray = cv2.resize(imgEqualize, (imgSize, imgSize))
-        trainingData.append([newArray, classNum])
+        images = cv2.imread(os.path.join(path, image), cv2.IMREAD_GRAYSCALE)
+        iamgeEqualized = cv2.equalizeHist(images)
+        imageResized = cv2.resize(iamgeEqualized, (32, 32))
+        trainingData.append([imageResized, classNumber])
       except Exception as e:
-        pass
+        print(e)
 
 createTrainingData()
 
@@ -46,7 +44,7 @@ for features, label in trainingData:
   X.append(features)
   y.append(label)
 
-X = np.array(X).reshape(-1, imgSize, imgSize, 1)
+X = np.array(X).reshape(-1, 32, 32, 1)
 y = np.array(y)
 
 pickleOut = open("X.pickle", "wb")
@@ -56,8 +54,3 @@ pickleOut.close
 pickleOut = open("y.pickle", "wb")
 pickle.dump(y, pickleOut)
 pickleOut.close
-
-pickleIn = open("X.pickle", "rb")
-X = pickle.load(pickleIn)
-
-print(X[1])

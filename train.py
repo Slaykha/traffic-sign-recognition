@@ -2,7 +2,6 @@ import tensorflow as tf
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
 import pickle
-from keras.optimizers import Adam
 
 X = pickle.load(open("X.pickle","rb"))
 y = pickle.load(open("y.pickle","rb"))
@@ -32,6 +31,6 @@ model.compile(optimizer='adam',
               loss="sparse_categorical_crossentropy",
               metrics=['accuracy'])
 
-model.fit(X, y, batch_size=64, epochs=10, validation_split=0.1)
+loh = model.fit(X, y, batch_size=64, epochs=10, validation_split=0.1)
 
 model.save("TFR_V-01.model")
